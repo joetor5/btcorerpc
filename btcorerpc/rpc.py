@@ -28,7 +28,7 @@ class BitcoinRpc:
         self.rpc_id = 0
         self.rpc_success = 0
         self.rpc_errors = 0
-        self.error_codes = {
+        self.exception_codes = {
             RPC_CONNECTION_ERROR: BitcoinRpcConnectionError,
             RPC_AUTH_ERROR: BitcoinRpcAuthError
         }
@@ -40,40 +40,48 @@ class BitcoinRpc:
         self.rpc_id += 1
         logger.info("RPC call start: id={}, method={}".format(self.rpc_id, method))
         try:
-            rpc_response = requests.post(self.rpc_url, auth=(self.rpc_user, self.rpc_password), headers=self.rpc_headers,
-                                        json={"jsonrpc": "1.0", "id": self.rpc_id,
-                                            "method": method, "params": params.split()})
+            rpc_response = requests.post(self.rpc_url,
+                                         auth=(self.rpc_user, self.rpc_password),
+                                         headers=self.rpc_headers,
+                                         json={"jsonrpc": "1.0", "id": self.rpc_id,
+                                                "method": method, "params": params.split()})
+
         except (ConnectionError, ConnectTimeout, TooManyRedirects):
-            return self._rpc_call_error(RPC_CONNECTION_ERROR, "failed to establish connection", "raw_connection")
+            return self._rpc_call_error(self._build_error(RPC_CONNECTION_ERROR,
+                                                          "Failed to establish connection"))
 
         status_code = rpc_response.status_code
         response_text = rpc_response.text
         if status_code == 401 and response_text == "":
-            return self._rpc_call_error(RPC_AUTH_ERROR,
-                                        "got empty payload and bad status code (possible wrong RPC credentials)",
-                                        method)
+            return self._rpc_call_error(self._build_error(RPC_AUTH_ERROR,
+                                                          "Got empty payload and bad status code "
+                                                          "(possible wrong RPC credentials)"))
 
         rpc_data = json.loads(response_text)
-        rpc_data["method"] = method
         if rpc_response.ok:
             self.rpc_success += 1
-            logger.info("RPC call success: id={}, status_code={}".format(self.rpc_id, status_code))
+            logger.info("RPC call success: id={}".format(self.rpc_id))
+            return rpc_data
         else:
-            self.rpc_errors += 1
-            logger.error("RPC call error: id={}, status_code={}, message: {}".format(self.rpc_id, status_code, rpc_data["error"]["message"]))
+            return self._rpc_call_error(rpc_data)
 
-        return rpc_data
-
-    def _rpc_call_error(self, code, message, method) -> dict:
+    def _rpc_call_error(self, data: dict) -> dict:
         self.rpc_errors += 1
+        code = data["error"]["code"]
+        message = data["error"]["message"]
         logger.error("RPC call error: id={}, {}".format(self.rpc_id, message))
-        if code in self.error_codes:
-            raise self.error_codes[code](message)
+        if code in self.exception_codes:
+            raise self.exception_codes[code](message)
+        else:
+            return data
 
-        return {"result": None,
-                "error": {"code": code, "message": message},
-                "id": self.rpc_id,
-                "method": method}
+    def _build_error(self, code, message):
+        return {
+            "error": {
+                "code": code,
+                "message": message
+            }
+        }
 
     def uptime(self) -> dict:
         """Returns the total uptime of the server."""
