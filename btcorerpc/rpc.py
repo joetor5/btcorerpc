@@ -36,7 +36,9 @@ class BitcoinRpc:
     def __repr__(self):
         pass
 
-    def _rpc_call(self, method: str, params: str = "") -> dict:
+    def _rpc_call(self, method: str, params: list = None) -> dict:
+        if params is None:
+            params = []
         self.rpc_id += 1
         logger.info("RPC call start: id={}, method={}".format(self.rpc_id, method))
         try:
@@ -44,7 +46,7 @@ class BitcoinRpc:
                                          auth=(self.rpc_user, self.rpc_password),
                                          headers=self.rpc_headers,
                                          json={"jsonrpc": "1.0", "id": self.rpc_id,
-                                                "method": method, "params": params.split()})
+                                                "method": method, "params": params})
 
         except (ConnectionError, ConnectTimeout, TooManyRedirects):
             return self._rpc_call_error(self._build_error(RPC_CONNECTION_ERROR,
@@ -104,7 +106,7 @@ class BitcoinRpc:
         if mode not in ("stats", "mallocinfo"):
             raise BitcoinRpcInvalidParams(f"Invalid mode: {mode}, valid modes: 'stats' or 'mallocinfo'")
 
-        return self._rpc_call("getmemoryinfo", mode)
+        return self._rpc_call("getmemoryinfo", [mode])
     
     def get_mem_pool_info(self) -> dict:
         """Returns details on the active state of the TX memory pool."""
@@ -126,7 +128,7 @@ class BitcoinRpc:
         """Return known addresses"""
         if count < 0:
             count = 0
-        return self._rpc_call("getnodeaddresses", str(count))
+        return self._rpc_call("getnodeaddresses", [count])
 
     def get_peer_info(self) -> dict:
         """Returns data about each connected network peer."""
