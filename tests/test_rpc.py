@@ -26,11 +26,12 @@ TEST_DATA = {
                 "get_mem_pool_info",
                 "get_connection_count",
                 "get_node_addresses",
-                "get_peer_info"]
+                "get_peer_info",
+                "get_best_block_hash"]
 }
 
 def test_rpc_call():
-    rpc = BitcoinRpc(*TEST_DATA["rpc_credentials"], host_ip=TEST_DATA["rpc_ip"])
+    rpc = create_rpc()
     for method in TEST_DATA["methods"]:
         response = eval("rpc.{}()".format(method))
         assert response["error"] == None
@@ -58,3 +59,25 @@ def test_rpc_auth_exception():
     assert rpc.get_rpc_total_count() == 1
     assert rpc.get_rpc_error_count() == 1
     assert rpc.get_rpc_success_count() == 0
+
+def test_rpc_block_methods():
+    rpc = create_rpc()
+
+    block_height = rpc.get_block_count()["result"]
+    block_hash = rpc.get_block_hash(block_height)["result"]
+    block = rpc.get_block(block_hash)
+    block_header = rpc.get_block_header(block_hash)
+
+    assert block["error"] == None
+    assert block_header["error"] == None
+
+    for arg in [block_height, block_hash]:
+        block_stats = rpc.get_block_stats(arg)
+        assert block_stats["error"] == None
+
+    assert rpc.get_rpc_total_count() == 6
+    assert rpc.get_rpc_error_count() == 0
+    assert rpc.get_rpc_success_count() == 6
+
+def create_rpc():
+    return BitcoinRpc(*TEST_DATA["rpc_credentials"], host_ip=TEST_DATA["rpc_ip"])

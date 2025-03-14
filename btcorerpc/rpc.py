@@ -134,6 +134,28 @@ class BitcoinRpc:
         """Returns data about each connected network peer."""
         return self._rpc_call("getpeerinfo")
 
+    def get_best_block_hash(self) -> dict:
+        """Returns the hash of the best (tip) block in the most-work fully-validated chain."""
+        return self._rpc_call("getbestblockhash")
+
+    def get_block_hash(self, height: int) -> dict:
+        """Returns hash of block in best-block-chain at height provided."""
+        return self._rpc_call("getblockhash", [height])
+
+    def get_block(self, blockhash: str, verbosity: int = 0) -> dict:
+        """Returns block data for given hash"""
+        return self._rpc_call("getblock", [blockhash, verbosity])
+
+    def get_block_header(self, blockhash: str, verbose: bool = False) -> dict:
+        """Returns information about block header."""
+        return self._rpc_call("getblockheader", [blockhash, verbose])
+
+    def get_block_stats(self, hash_or_height, stats: list = None) -> dict:
+        """Returns per block statistics for a given window."""
+        if stats is None:
+            stats = []
+        return self._rpc_call("getblockstats", [hash_or_height, stats])
+
     def get_rpc_total_count(self) -> int:
         return self.rpc_id
 
