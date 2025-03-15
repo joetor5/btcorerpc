@@ -6,10 +6,7 @@ import os
 import pytest
 from btcorerpc.rpc import BitcoinRpc
 from btcorerpc.exceptions import BitcoinRpcConnectionError, BitcoinRpcAuthError
-
-BITCOIN_RPC_IP = os.getenv("BITCOIN_RPC_IP")
-BITCOIN_RPC_USER = os.getenv("BITCOIN_RPC_USER")
-BITCOIN_RPC_PASSWORD = os.getenv("BITCOIN_RPC_PASSWORD")
+from utils import _create_rpc, BITCOIN_RPC_USER, BITCOIN_RPC_PASSWORD, BITCOIN_RPC_IP
 
 TEST_DATA = {
     "rpc_ip": BITCOIN_RPC_IP,
@@ -107,7 +104,3 @@ def _assert_rpc_stats(rpc_obj, total, success, error):
 def _assert_no_error(result_list):
     for result in result_list:
         assert result["error"] == None
-
-def _create_rpc():
-    return BitcoinRpc(*TEST_DATA["rpc_credentials"], host_ip=TEST_DATA["rpc_ip"])
-
