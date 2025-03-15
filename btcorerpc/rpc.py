@@ -33,8 +33,14 @@ class BitcoinRpc:
             RPC_AUTH_ERROR: BitcoinRpcAuthError
         }
 
+        logger.info(f"BitcoinRpc initialized, RPC url: {self.rpc_url}")
+
     def __repr__(self):
-        pass
+        return (f"BitcoinRpc(rpc_user='{self.rpc_user}', rpc_password='{self.rpc_password}', "
+                f"host_ip='{self.host_ip}', host_port={self.host_port})")
+
+    def __str__(self):
+        return f"BitcoinRpc<rpc_total={self.rpc_id}, rpc_success={self.rpc_success}, rpc_errors={self.rpc_errors}>"
 
     def _rpc_call(self, method: str, params: list = None) -> dict:
         if params is None:
@@ -50,7 +56,8 @@ class BitcoinRpc:
 
         except (ConnectionError, ConnectTimeout, TooManyRedirects):
             return self._rpc_call_error(self._build_error(RPC_CONNECTION_ERROR,
-                                                          "Failed to establish connection"))
+                                                          f"Failed to establish connection "
+                                                          f"({self.rpc_url})"))
 
         status_code = rpc_response.status_code
         response_text = rpc_response.text
@@ -73,7 +80,7 @@ class BitcoinRpc:
         message = data["error"]["message"]
         logger.error("RPC call error: id={}, {}".format(self.rpc_id, message))
         if code in self.exception_codes:
-            raise self.exception_codes[code](message)
+            raise self.exception_codes[code](message) from None
         else:
             return data
 
