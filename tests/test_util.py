@@ -1,3 +1,7 @@
+# Copyright (c) 2025 Joel Torres
+# Distributed under the MIT software license, see the accompanying
+# file LICENSE or https://opensource.org/license/mit.
+
 import btcorerpc.util as btc_util
 from utils import _create_rpc
 
