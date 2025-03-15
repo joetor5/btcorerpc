@@ -108,7 +108,7 @@ class BitcoinRpc:
         """Returns the height of the most-work fully-validated chain."""
         return self._rpc_call("getblockcount")
     
-    def get_memory_info(self, mode="stats") -> dict:
+    def get_memory_info(self, mode: str = "stats") -> dict:
         """Returns information about memory usage."""
         if mode not in ("stats", "mallocinfo"):
             raise BitcoinRpcInvalidParams(f"Invalid mode: {mode}, valid modes: 'stats' or 'mallocinfo'")
@@ -118,6 +118,14 @@ class BitcoinRpc:
     def get_mem_pool_info(self) -> dict:
         """Returns details on the active state of the TX memory pool."""
         return self._rpc_call("getmempoolinfo")
+
+    def get_raw_mem_pool(self, verbose: bool = False, mempool_sequence: bool = False) -> dict:
+        """Returns all transaction ids in memory pool"""
+        return self._rpc_call("getrawmempool", [verbose, mempool_sequence])
+
+    def get_mem_pool_entry(self, txid: str) -> dict:
+        """Returns mempool data for given transaction"""
+        return self._rpc_call("getmempoolentry", [txid])
 
     def get_network_info(self) -> dict:
         """Returns various state info regarding P2P networking."""
