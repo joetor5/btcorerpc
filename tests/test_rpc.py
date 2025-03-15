@@ -29,7 +29,9 @@ TEST_DATA = {
                 "get_peer_info",
                 "get_best_block_hash",
                 "get_chain_states",
-                "get_chain_tips"]
+                "get_chain_tips",
+                "get_deployment_info",
+                "get_difficulty"]
 }
 
 def test_rpc_call():
@@ -69,17 +71,19 @@ def test_rpc_block_methods():
     block_hash = rpc.get_block_hash(block_height)["result"]
     block = rpc.get_block(block_hash)
     block_header = rpc.get_block_header(block_hash)
+    deployment_info = rpc.get_deployment_info(block_hash)
 
     assert block["error"] == None
     assert block_header["error"] == None
+    assert deployment_info["error"] == None
 
     for arg in [block_height, block_hash]:
         block_stats = rpc.get_block_stats(arg)
         assert block_stats["error"] == None
 
-    assert rpc.get_rpc_total_count() == 6
+    assert rpc.get_rpc_total_count() == 7
     assert rpc.get_rpc_error_count() == 0
-    assert rpc.get_rpc_success_count() == 6
+    assert rpc.get_rpc_success_count() == 7
 
 def create_rpc():
     return BitcoinRpc(*TEST_DATA["rpc_credentials"], host_ip=TEST_DATA["rpc_ip"])

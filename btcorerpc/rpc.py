@@ -171,6 +171,14 @@ class BitcoinRpc:
         """Return information about all known tips in the block tree."""
         return self._rpc_call("getchaintips")
 
+    def get_deployment_info(self, blockhash: str = None) -> dict:
+        """Returns various state info regarding deployments of consensus changes."""
+        return self._rpc_call("getdeploymentinfo", [blockhash])
+
+    def get_difficulty(self) -> dict:
+        """Returns the proof-of-work difficulty"""
+        return self._rpc_call("getdifficulty")
+
     def get_rpc_total_count(self) -> int:
         return self.rpc_id
 
