@@ -27,7 +27,9 @@ TEST_DATA = {
                 "get_connection_count",
                 "get_node_addresses",
                 "get_peer_info",
-                "get_best_block_hash"]
+                "get_best_block_hash",
+                "get_chain_states",
+                "get_chain_tips"]
 }
 
 def test_rpc_call():

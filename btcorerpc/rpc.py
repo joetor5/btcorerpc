@@ -163,6 +163,14 @@ class BitcoinRpc:
             stats = []
         return self._rpc_call("getblockstats", [hash_or_height, stats])
 
+    def get_chain_states(self) -> dict:
+        """Return information about chainstates."""
+        return self._rpc_call("getchainstates")
+
+    def get_chain_tips(self) -> dict:
+        """Return information about all known tips in the block tree."""
+        return self._rpc_call("getchaintips")
+
     def get_rpc_total_count(self) -> int:
         return self.rpc_id
 
