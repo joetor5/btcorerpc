@@ -127,6 +127,14 @@ class BitcoinRpc:
         """Returns mempool data for given transaction"""
         return self._rpc_call("getmempoolentry", [txid])
 
+    def get_mem_pool_ancestors(self, txid: str, verbose: bool = False) -> dict:
+        """Returns all in-mempool ancestors for given transaction"""
+        return self._rpc_call("getmempoolancestors", [txid, verbose])
+
+    def get_mem_pool_descendants(self, txid: str, verbose: bool = False) -> dict:
+        """Returns all in-mempool descendants for given transaction"""
+        return self._rpc_call("getmempooldescendants", [txid, verbose])
+
     def get_network_info(self) -> dict:
         """Returns various state info regarding P2P networking."""
         return self._rpc_call("getnetworkinfo")

@@ -16,15 +16,15 @@ def test_get_node_connections():
     result = btc_util.get_node_connections(rpc)
     keys =  ("in", "out", "total")
 
-    _assert_dict_result(result, keys, int, True)
+    _assert_util_result(result, keys, int, True)
 
 def test_get_node_traffic():
     result = btc_util.get_node_traffic(rpc)
     keys = ("in", "out")
 
-    _assert_dict_result(result, keys, int, True)
+    _assert_util_result(result, keys, int, True)
 
-def _assert_dict_result(result, keys, key_type, greater_than=False):
+def _assert_util_result(result, keys, key_type, greater_than=False):
     for key in keys:
         assert key in result
         assert type(result[key]) == key_type
