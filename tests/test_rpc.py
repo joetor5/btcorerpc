@@ -5,7 +5,7 @@
 import os
 import pytest
 from btcorerpc.rpc import BitcoinRpc
-from btcorerpc.exceptions import BitcoinRpcConnectionError, BitcoinRpcAuthError
+from btcorerpc.exceptions import BitcoinRpcConnectionError, BitcoinRpcAuthError, BitcoinRpcValueError
 from utils import _create_rpc, BITCOIN_RPC_USER, BITCOIN_RPC_PASSWORD, BITCOIN_RPC_IP
 
 TEST_DATA = {
@@ -34,6 +34,31 @@ TEST_DATA = {
 
 METHOD_COUNT = len(TEST_DATA["methods"])
 
+def test_rpc_attributes():
+    rpc = _create_rpc()
+
+    new_rpc_user = "test"
+    new_rpc_password = "test"
+    new_host_ip = "172.16.1.1"
+    new_host_port = 8333
+
+    assert rpc.get_rpc_user() == BITCOIN_RPC_USER
+    assert rpc.get_rpc_password() == BITCOIN_RPC_PASSWORD
+    assert rpc.get_host_ip() == BITCOIN_RPC_IP
+    assert rpc.get_host_port() == 8332
+    assert rpc.get_rpc_url() == f"http://{BITCOIN_RPC_IP}:8332"
+
+    rpc.set_rpc_user(new_rpc_user)
+    rpc.set_rpc_password(new_rpc_password)
+    rpc.set_host_ip(new_host_ip)
+    rpc.set_host_port(new_host_port)
+
+    assert rpc.get_rpc_user() == new_rpc_user
+    assert rpc.get_rpc_password() == new_rpc_password
+    assert rpc.get_host_ip() == new_host_ip
+    assert rpc.get_host_port() == new_host_port
+    assert rpc.get_rpc_url() == f"http://{new_host_ip}:{new_host_port}"
+
 def test_rpc_call():
     rpc = _create_rpc()
     results = []
@@ -44,6 +69,8 @@ def test_rpc_call():
 
     _assert_rpc_no_error(results)
     _assert_rpc_stats(rpc, METHOD_COUNT, METHOD_COUNT, 0)
+    rpc.reset_rpc_counters()
+    _assert_rpc_stats(rpc, 0, 0, 0)
 
 def test_rpc_connection_exception():
     rpc = BitcoinRpc(*TEST_DATA["rpc_credentials"], host_ip=TEST_DATA["rpc_ip"], host_port=TEST_DATA["bad_port"])
@@ -60,6 +87,17 @@ def test_rpc_auth_exception():
         rpc.uptime()
 
     _assert_rpc_stats(rpc, 1, 0, 1)
+
+def test_rpc_value_exception():
+    rpc = _create_rpc()
+
+    for ip in ["172.16.1.500", "500.16.1.1", "172.500.1.1", "172.16.500.1", 172]:
+        with pytest.raises(BitcoinRpcValueError):
+            rpc.set_host_ip(ip)
+
+    for port in [-1, 500, 100000, "1024", "test"]:
+        with pytest.raises(BitcoinRpcValueError):
+            rpc.set_host_port(port)
 
 def test_rpc_block_methods():
     rpc = _create_rpc()

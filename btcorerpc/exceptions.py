@@ -13,3 +13,6 @@ class BitcoinRpcAuthError(BitcoinRpcError):
 
 class BitcoinRpcInvalidParams(BitcoinRpcError):
     pass
+
+class BitcoinRpcValueError(BitcoinRpcError):
+    pass

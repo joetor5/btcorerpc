@@ -5,14 +5,14 @@
 from . import logfactory
 from .rpc import BitcoinRpc
 
-logger = logfactory.create(__name__)
+_logger = logfactory.create(__name__)
 
 def _run_util(func):
     def wrapper(*args, **kwargs):
         assert isinstance(args[0], BitcoinRpc), "Not a bitcoin rpc object"
-        logger.info(f"util start: {func.__name__}")
+        _logger.info(f"util start: {func.__name__}")
         result = func(*args, **kwargs)
-        logger.info(f"util end: {func.__name__}: {result}")
+        _logger.info(f"util end: {func.__name__}: {result}")
         return result
 
     return wrapper
