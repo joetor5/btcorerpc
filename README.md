@@ -1,6 +1,6 @@
 # btcorerpc
 
-Bitcoin Core RPC wrapper. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
+Bitcoin Core RPC client. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
 
 ## Prerequisites
 
@@ -44,12 +44,13 @@ Optionally, **host_ip** and **host_port** can be passed when instantiating the R
 
 ## Exceptions
 
-|Exception                 | Description                                                                 |
-|--------------------------|-----------------------------------------------------------------------------|
-| BitcoinRpcValueError     | Raised if an invalid host_ip or host_port is set on the RPC object          |
-| BitcoinRpcConnectionError| Raised if the raw TCP connection fails to establish with a Bitcoin Core node| 
-| BitcoinRpcAuthError      | Raised if the authentication with a Bitcoin Core node fails                 |
-| BitcoinRpcInvalidParams  | Raised if invalid params are passed to a RPC method                         |
+|Exception                     | Description                                                                 |
+|------------------------------|-----------------------------------------------------------------------------|
+| BitcoinRpcValueError         | Raised if an invalid value is set on a RPC object attribute                 |
+| BitcoinRpcConnectionError    | Raised if the raw TCP connection fails to establish with a Bitcoin Core node| 
+| BitcoinRpcAuthError          | Raised if the authentication with a Bitcoin Core node fails                 |
+| BitcoinRpcMethodParamsError  | Raised if invalid params are passed to a RPC method                         |
+| BitcoinRpcMethodNotFoundError| Raised if an invalid RPC method is called                                   |
 
 ## Implemented RPC Methods
 
