@@ -6,7 +6,7 @@ Bitcoin Core RPC wrapper. Geared towards full node operators for collecting/moni
 
 A running Bitcoin Core node instance configured to allow RPC connections.
 
-Sample bitcoin.conf configuration (replace **rpcuser** and **rpcpassword**):
+Sample bitcoin.conf configuration (replace **rpcuser** and **rpcpassword** values with yours):
 ```
 server=1
 rpcuser=test
@@ -21,7 +21,7 @@ Currently only rpcuser/rpcpassword method is supported for RPC operations.
 ## Install
 
 ```
-pip install btcorerpc
+TBA
 ```
 
 ## Usage
@@ -41,13 +41,6 @@ blockchain_info = rpc.get_blockchain_info()
 
 Optionally, **host_ip** and **host_port** can be passed when instantiating the RPC object. The defaults are 127.0.0.1 (host_ip) and 8332 (host_port).
 
-If no exception is raised when calling a RPC method (see **Exceptions** below), the return value is a dictionary as defined by the JSON-RPC 1.0 specification. The value is simply the same as returned by the Bitcoin Core node with no modifications.
-
-See the following docs for more details on the JSON-RPC format:
-
-https://www.jsonrpc.org/specification_v1
-
-https://bitcoincore.org/en/doc/27.0.0/
 
 ## Exceptions
 
@@ -59,5 +52,7 @@ https://bitcoincore.org/en/doc/27.0.0/
 | BitcoinRpcInvalidParams  | Raised if invalid params are passed to a RPC method                         |
 
 ## Implemented RPC Methods
+
+TBA
 
 
