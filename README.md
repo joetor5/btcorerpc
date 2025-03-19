@@ -1,6 +1,6 @@
 # btcorerpc
 
-Bitcoin Core RPC client. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
+Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
 
 ## Prerequisites
 
@@ -17,12 +17,12 @@ rpcbind=0.0.0.0
 
 Also recommended to add **rpcallowip** in the configuration for extra security.
 
-Currently only rpcuser/rpcpassword method is supported for RPC operations.
+Currently only rpcuser/rpcpassword authentication is supported for RPC operations.
 
 ## Install
 
 ```
-TBA
+pip install btcorerpc
 ```
 
 ## Usage
@@ -102,3 +102,7 @@ for more details on the RPC methods and the responses that each generates.
 | getdeploymentinfo     | get_deployment_info(blockhash: str = None)                              |
 | getdifficulty         | get_difficulty                                                          |
 
+## Logging
+
+Logging is implemented with both StreamHandler and RotatingFileHandler handlers. File logs are stored under
+$HOME/.btcorerpc/rpc.log.
