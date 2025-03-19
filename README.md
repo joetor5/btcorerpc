@@ -4,7 +4,8 @@ Bitcoin Core RPC client. Geared towards full node operators for collecting/monit
 
 ## Prerequisites
 
-A running Bitcoin Core node instance configured to allow RPC connections.
+1. Python >= 3.8
+2. A running Bitcoin Core node instance configured to allow RPC connections.
 
 Sample bitcoin.conf configuration (replace **rpcuser** and **rpcpassword** values with yours):
 ```
@@ -26,6 +27,8 @@ TBA
 
 ## Usage
 
+*btcorerpc.rpc.BitcoinRpc(rpc_user, rpc_password, host_ip="127.0.0.1", host_port=8332, raw_json_response=True)*
+
 Create RPC object and call any implemented Bitcoin Core RPC method. See **Implemented RPC Methods** below for a full list.
 
 ```
@@ -37,20 +40,35 @@ rpc_password = "test123"
 rpc = BitcoinRpc(rpc_user, rpc_password)
 
 blockchain_info = rpc.get_blockchain_info()
+if not blockchain_info["error"]:
+    print(blockchain_info["result"])
 ```
 
-Optionally, **host_ip** and **host_port** can be passed when instantiating the RPC object. The defaults are 127.0.0.1 (host_ip) and 8332 (host_port).
+By default, a dictionary object is returned in the same JSON-RPC format as returned by bitcoind when calling a method.
+The "error" key can be inspected for errors. 
+
+The above behavior can be disabled by setting **raw_json_response** to False when creating the object 
+(or calling the **disable_raw_json_response** method). In this case, only the value from the "result" key is returned
+and errors are raised via custom exceptions when making the method call (see **Exceptions** below for a list).
+
 
 
 ## Exceptions
 
-|Exception                     | Description                                                                 |
-|------------------------------|-----------------------------------------------------------------------------|
-| BitcoinRpcValueError         | Raised if an invalid value is set on a RPC object attribute                 |
-| BitcoinRpcConnectionError    | Raised if the raw TCP connection fails to establish with a Bitcoin Core node| 
-| BitcoinRpcAuthError          | Raised if the authentication with a Bitcoin Core node fails                 |
-| BitcoinRpcMethodParamsError  | Raised if invalid params are passed to a RPC method                         |
-| BitcoinRpcMethodNotFoundError| Raised if an invalid RPC method is called                                   |
+Except for BitcoinRpcValueError, the rest of the exceptions are raised if **raw_json_response=False**
+and there was an error when making a method call (see **Usage** for an explanation on this).
+
+| Exception                     | Description                                                                  |
+|-------------------------------|------------------------------------------------------------------------------|
+| BitcoinRpcValueError          | Raised if an invalid value is set on a RPC object attribute                  |
+| BitcoinRpcConnectionError     | Raised if the raw TCP connection fails to establish with a Bitcoin Core node | 
+| BitcoinRpcAuthError           | Raised if the authentication with a Bitcoin Core node fails                  |
+| BitcoinRpcMethodParamsError   | Raised if invalid params are passed to a RPC method                          |
+| BitcoinRpcMethodNotFoundError | Raised if an invalid RPC method is called                                    |
+| BitcoinRpcInvalidRequestError | Raised if an invalid RPC request is made                                     |
+| BitcoinRpcInternalError       | Raised if there is an internal error in bitcoind                             |
+| BitcoinRpcParseError          | Raised if there is a parse error in bitcoind                                 |
+| BitcoinRpcServerError         | Raised for any other undefined error in a RPC call                           |
 
 ## Implemented RPC Methods
 
@@ -83,3 +101,4 @@ for more details on the RPC methods and the responses that each generates.
 | getchaintips          | get_chain_tips                                                          |
 | getdeploymentinfo     | get_deployment_info(blockhash: str = None)                              |
 | getdifficulty         | get_difficulty                                                          |
+
