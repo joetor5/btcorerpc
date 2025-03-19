@@ -314,3 +314,6 @@ class BitcoinRpc:
 
     def disable_raw_json_response(self) -> None:
         self.__raw_json_response = False
+
+    def is_raw_json_response_enabled(self) -> bool:
+        return self.__raw_json_response

@@ -3,9 +3,15 @@
 # file LICENSE or https://opensource.org/license/mit.
 
 import os
+from types import MethodType
 import pytest
 from btcorerpc.rpc import BitcoinRpc
-from btcorerpc.exceptions import BitcoinRpcConnectionError, BitcoinRpcAuthError, BitcoinRpcValueError
+from btcorerpc.exceptions import (BitcoinRpcConnectionError,
+                                  BitcoinRpcAuthError,
+                                  BitcoinRpcValueError,
+                                  BitcoinRpcMethodNotFoundError,
+                                  BitcoinRpcMethodParamsError)
+
 from utils import _create_rpc, BITCOIN_RPC_USER, BITCOIN_RPC_PASSWORD, BITCOIN_RPC_IP
 
 TEST_DATA = {
@@ -101,6 +107,31 @@ def test_rpc_value_exception():
     for port in [-1, 500, 100000, "1024", "test"]:
         with pytest.raises(BitcoinRpcValueError):
             rpc.set_host_port(port)
+
+    with pytest.raises(BitcoinRpcValueError):
+        rpc2 = BitcoinRpc(*TEST_DATA["rpc_credentials"], raw_json_response="False")
+
+def test_rpc_method_not_found_exception():
+    rpc = _create_rpc()
+    rpc.disable_raw_json_response()
+
+    def invalid_method(self):
+        return self._BitcoinRpc__rpc_call("invalidmethod")
+
+    rpc.invalid_method = MethodType(invalid_method, rpc)
+    with pytest.raises(BitcoinRpcMethodNotFoundError):
+        rpc.invalid_method()
+
+    _assert_rpc_stats(rpc, 1, 0, 1)
+
+def test_rpc_method_params_exception():
+    rpc = _create_rpc()
+    rpc.disable_raw_json_response()
+
+    with pytest.raises(BitcoinRpcMethodParamsError):
+        rpc.get_memory_info(mode="invalid")
+
+    _assert_rpc_stats(rpc, 1, 0, 1)
 
 def test_rpc_block_methods():
     rpc = _create_rpc()
