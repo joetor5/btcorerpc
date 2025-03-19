@@ -11,7 +11,22 @@ class BitcoinRpcConnectionError(BitcoinRpcError):
 class BitcoinRpcAuthError(BitcoinRpcError):
     pass
 
-class BitcoinRpcInvalidParams(BitcoinRpcError):
+class BitcoinRpcMethodNotFoundError(BitcoinRpcError):
+    pass
+
+class BitcoinRpcMethodParamsError(BitcoinRpcError):
+    pass
+
+class BitcoinRpcInvalidRequestError(BitcoinRpcError):
+    pass
+
+class BitcoinRpcInternalError(BitcoinRpcError):
+    pass
+
+class BitcoinRpcParseError(BitcoinRpcError):
+    pass
+
+class BitcoinRpcServerError(BitcoinRpcError):
     pass
 
 class BitcoinRpcValueError(BitcoinRpcError):

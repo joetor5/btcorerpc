@@ -5,23 +5,40 @@
 import json
 import re
 import requests
-from .exceptions import BitcoinRpcValueError, BitcoinRpcConnectionError, BitcoinRpcAuthError, BitcoinRpcInvalidParams
+from .exceptions import (BitcoinRpcValueError,
+                         BitcoinRpcConnectionError,
+                         BitcoinRpcAuthError,
+                         BitcoinRpcMethodNotFoundError,
+                         BitcoinRpcMethodParamsError,
+                         BitcoinRpcInvalidRequestError,
+                         BitcoinRpcInternalError,
+                         BitcoinRpcParseError,
+                         BitcoinRpcServerError)
+
 from requests.exceptions import ConnectionError, ConnectTimeout, TooManyRedirects
 from . import logfactory
 
-_RPC_CONNECTION_ERROR = 1
-_RPC_AUTH_ERROR = 2
-
 _logger = logfactory.create(__name__)
+
+_RPC_CONNECTION_ERROR = -1
+_RPC_AUTH_ERROR = -2
+_RPC_INVALID_REQUEST_ERROR = -32600
+_RPC_METHOD_NOT_FOUND_ERROR = -32601
+_RPC_METHOD_PARAMS_ERROR = -8
+_RPC_INTERNAL_ERROR = -32603
+_RPC_PARSE_ERROR = -32700
 
 class BitcoinRpc:
     
-    def __init__(self, rpc_user: str, rpc_password: str, host_ip: str = "127.0.0.1", host_port: int = 8332):
+    def __init__(self, rpc_user: str, rpc_password: str, host_ip: str = "127.0.0.1", host_port: int = 8332,
+                 raw_json_response: bool = True):
 
         self.__rpc_user = rpc_user
         self.__rpc_password = rpc_password
         self.__host_ip = self.__validate_host_ip(host_ip)
         self.__host_port = self.__validate_host_port(host_port)
+        self.__raw_json_response = self.__validate_raw_json_response(raw_json_response)
+
         self.__rpc_url = self.__set_rpc_url()
         self.__rpc_headers = {
             "Content-Type": "text/plain"
@@ -31,7 +48,12 @@ class BitcoinRpc:
         self.__rpc_errors = 0
         self.__exception_codes = {
             _RPC_CONNECTION_ERROR: BitcoinRpcConnectionError,
-            _RPC_AUTH_ERROR: BitcoinRpcAuthError
+            _RPC_AUTH_ERROR: BitcoinRpcAuthError,
+            _RPC_METHOD_NOT_FOUND_ERROR: BitcoinRpcMethodNotFoundError,
+            _RPC_METHOD_PARAMS_ERROR: BitcoinRpcMethodParamsError,
+            _RPC_INVALID_REQUEST_ERROR: BitcoinRpcInvalidRequestError,
+            _RPC_INTERNAL_ERROR: BitcoinRpcInternalError,
+            _RPC_PARSE_ERROR: BitcoinRpcParseError
         }
 
         _logger.info(f"BitcoinRpc initialized, RPC url: {self.__rpc_url}")
@@ -62,8 +84,8 @@ class BitcoinRpc:
 
         if not valid:
             raise BitcoinRpcValueError(f"Invalid value for host_ip: {host_ip}")
-        else:
-            return host_ip
+
+        return host_ip
 
     def __validate_host_port(self, host_port: int) -> int:
         valid = True
@@ -75,8 +97,14 @@ class BitcoinRpc:
 
         if not valid:
             raise BitcoinRpcValueError(f"Invalid value for host_port: {host_port}")
-        else:
-            return host_port
+
+        return host_port
+
+    def __validate_raw_json_response(self, raw_json_response: bool) -> bool:
+        if not isinstance(raw_json_response, bool):
+            raise BitcoinRpcValueError(f"Invalid value for raw_json_response: {raw_json_response}")
+
+        return raw_json_response
 
     def __rpc_call(self, method: str, params: list = None) -> dict:
         if params is None:
@@ -93,20 +121,23 @@ class BitcoinRpc:
         except (ConnectionError, ConnectTimeout, TooManyRedirects):
             return self.__rpc_call_error(self.__build_error(_RPC_CONNECTION_ERROR,
                                                           f"Failed to establish connection "
-                                                          f"({self.__rpc_url})"))
+                                                          f"({self.__rpc_url})", self.__rpc_id))
 
         status_code = rpc_response.status_code
         response_text = rpc_response.text
         if status_code == 401 and response_text == "":
             return self.__rpc_call_error(self.__build_error(_RPC_AUTH_ERROR,
                                                           "Got empty payload and bad status code "
-                                                          "(possible wrong RPC credentials)"))
+                                                          "(possible wrong RPC credentials)", self.__rpc_id))
 
         rpc_data = json.loads(response_text)
-        if rpc_response.ok:
+        if rpc_response.ok and not rpc_data["error"]:
             self.__rpc_success += 1
             _logger.info("RPC call success: id={}".format(self.__rpc_id))
-            return rpc_data
+            if self.__raw_json_response:
+                return rpc_data
+            else:
+                return rpc_data["result"]
         else:
             return self.__rpc_call_error(rpc_data)
 
@@ -115,17 +146,22 @@ class BitcoinRpc:
         code = data["error"]["code"]
         message = data["error"]["message"]
         _logger.error("RPC call error: id={}, {}".format(self.__rpc_id, message))
-        if code in self.__exception_codes:
-            raise self.__exception_codes[code](message) from None
-        else:
+        if self.__raw_json_response:
             return data
+        else:
+            if code in self.__exception_codes:
+                raise self.__exception_codes[code](message) from None
+            else:
+                raise BitcoinRpcServerError(message)
 
-    def __build_error(self, code: int, message: str) -> dict:
+    def __build_error(self, code: int, message: str, rpc_id: int) -> dict:
         return {
+            "result": None,
             "error": {
                 "code": code,
                 "message": message
-            }
+            },
+            "id": rpc_id
         }
 
     def uptime(self) -> dict:
@@ -146,9 +182,6 @@ class BitcoinRpc:
     
     def get_memory_info(self, mode: str = "stats") -> dict:
         """Returns information about memory usage."""
-        if mode not in ("stats", "mallocinfo"):
-            raise BitcoinRpcInvalidParams(f"Invalid mode: {mode}, valid modes: 'stats' or 'mallocinfo'")
-
         return self.__rpc_call("getmemoryinfo", [mode])
     
     def get_mem_pool_info(self) -> dict:
@@ -276,3 +309,8 @@ class BitcoinRpc:
     def get_rpc_url(self) -> str:
         return self.__rpc_url
 
+    def enable_raw_json_response(self) -> None:
+        self.__raw_json_response = True
+
+    def disable_raw_json_response(self) -> None:
+        self.__raw_json_response = False

@@ -74,6 +74,7 @@ def test_rpc_call():
 
 def test_rpc_connection_exception():
     rpc = BitcoinRpc(*TEST_DATA["rpc_credentials"], host_ip=TEST_DATA["rpc_ip"], host_port=TEST_DATA["bad_port"])
+    rpc.disable_raw_json_response()
 
     for method in TEST_DATA["methods"]:
         with pytest.raises(BitcoinRpcConnectionError):
@@ -83,6 +84,8 @@ def test_rpc_connection_exception():
 
 def test_rpc_auth_exception():
     rpc = BitcoinRpc(*TEST_DATA["rpc_credentials_bad"], host_ip=TEST_DATA["rpc_ip"])
+    rpc.disable_raw_json_response()
+
     with pytest.raises(BitcoinRpcAuthError):
         rpc.uptime()
 
