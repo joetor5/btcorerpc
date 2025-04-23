@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 setup(
     name="btcorerpc",
-    description="Simple Bitcoin Core RPC wrapper",
+    description="Simple Bitcoin Core RPC client",
     long_description=doc,
     long_description_content_type="text/markdown",
     author="Joel Torres",

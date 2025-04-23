@@ -1,6 +1,6 @@
 # btcorerpc
 
-Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
+Simple Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
 
 ## Prerequisites
 
