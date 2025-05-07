@@ -2,6 +2,16 @@
 
 Simple Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operators for collecting/monitoring data on a running bitcoind (Bitcoin Core) instance.
 
+## Table of Contents
+
+- [License](#license)
+- [Prerequisites](#prerequisites)
+- [Install](#install)
+- [Usage](#usage)
+- [Exceptions](#exceptions)
+- [Implemented RPC Methods](#implemented-rpc-methods)
+- [Logging](#logging)
+
 ## License
 
 Distributed under the MIT License. See the accompanying file [LICENSE](https://github.com/joetor5/btcorerpc/blob/main/LICENSE).
@@ -54,7 +64,6 @@ The "error" key can be inspected for errors.
 The above behavior can be disabled by setting **raw_json_response** to False when creating the object 
 (or calling the **disable_raw_json_response** method). In this case, only the value from the "result" key is returned
 and errors are raised via custom exceptions when making the method call (see **Exceptions** below for a list).
-
 
 
 ## Exceptions
