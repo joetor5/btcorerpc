@@ -14,7 +14,7 @@ Simple Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operator
 
 ## License
 
-Distributed under the MIT License. See the accompanying file [LICENSE](https://github.com/joetor5/btcorerpc/blob/main/LICENSE).
+Distributed under the MIT License. See the accompanying file LICENSE.
 
 ## Prerequisites
 
