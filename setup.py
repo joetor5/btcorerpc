@@ -2,21 +2,16 @@
 # Distributed under the MIT License. See the accompanying file LICENSE.
 
 from setuptools import setup
-import btcorerpc
 
 with open("README.md") as f:
     doc = f.read()
 
 setup(
     name="btcorerpc",
-    version=btcorerpc.__version__,
     description="Simple Bitcoin Core RPC client",
     long_description=doc,
     long_description_content_type="text/markdown",
-    author=btcorerpc.__author__,
-    author_email=btcorerpc.__author_email__,
     url="https://github.com/joetor5/btcorerpc",
-    license=btcorerpc.__license__,
     platforms="any",
     install_requires=[
         "requests==2.32.3"
