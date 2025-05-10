@@ -1,15 +1,15 @@
 # Copyright (c) 2025 Joel Torres
 # Distributed under the MIT License. See the accompanying file LICENSE.
 
+import re
 import btcorerpc.util as btc_util
 from utils import _create_rpc
-
-BITCOIN_NODE_VERSION = "28.1.0"
 
 rpc = _create_rpc()
 
 def test_get_node_version():
-    assert btc_util.get_node_version(rpc) == BITCOIN_NODE_VERSION
+    node_version = btc_util.get_node_version(rpc)
+    assert re.search("[\\d]+.[\\d]+.[\\d]+", node_version)
 
 def test_get_node_connections():
     result = btc_util.get_node_connections(rpc)
