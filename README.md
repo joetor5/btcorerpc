@@ -119,3 +119,18 @@ for more details on the RPC methods and the responses that each generates.
 
 Logging is implemented with both StreamHandler and RotatingFileHandler handlers. File logs are stored under
 $HOME/.btcorerpc/rpc.log.
+
+By default, the logs will not get printed or written to the log file. To turn these on, the following environment variables can be set.
+
+Turn on logging at INFO level:
+```
+export BTCORERPC_LOG=1
+```
+Turn on logging at DEBUG level:
+```
+export BTCORERPC_LOG_DEBUG=1
+```
+Turn on StreamHandler logging:
+```
+export BTCORERPC_LOG_CONSOLE=1
+```
