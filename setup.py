@@ -11,7 +11,10 @@ setup(
     description="Simple Bitcoin Core RPC client",
     long_description=doc,
     long_description_content_type="text/markdown",
+    author="Joel Torres",
+    author_email="jt@joeltorres.org",
     url="https://github.com/joetor5/btcorerpc",
+    license="MIT",
     platforms="any",
     install_requires=[
         "requests==2.32.3"
