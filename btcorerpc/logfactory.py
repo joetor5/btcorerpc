@@ -6,6 +6,9 @@ import logging
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
+BTCORE_HOME = os.getenv("BTCORE_HOME")
+BTCORE_HOME = Path(BTCORE_HOME) if BTCORE_HOME else Path.home()
+
 def create(logger_name):
 
     set_logging = True if os.getenv("BTCORERPC_LOG") == "1" else False
@@ -16,10 +19,8 @@ def create(logger_name):
     if set_logging_debug:
         logging_level = logging.DEBUG
 
-    log_dir_file = logger_name.split(".")
-    log_file = f"{log_dir_file[1]}.log"
-    log_dir = f".{log_dir_file[0]}"
-    log_dir = Path.joinpath(Path.home() / log_dir)
+    log_file = f"{logger_name.split('.')[1]}.log"
+    log_dir = BTCORE_HOME / ".btcore"
     log_dir.mkdir(exist_ok=True)
 
     logger = logging.getLogger(logger_name)
