@@ -12,11 +12,11 @@ Simple Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operator
 - [Implemented RPC Methods](#implemented-rpc-methods)
 - [Logging](#logging)
 
-## License
+## <div id="license">License</div>
 
 Distributed under the MIT License. See the accompanying file LICENSE.
 
-## Prerequisites
+## <div id="prerequisites">Prerequisites</div>
 
 1. Python >= 3.8
 2. A running Bitcoin Core node instance configured to allow RPC connections.
@@ -33,13 +33,13 @@ Also recommended to add **rpcallowip** in the configuration for extra security.
 
 Currently only rpcuser/rpcpassword authentication is supported for RPC operations.
 
-## Install
+## <div id="install">Install</div>
 
 ```
 pip install btcorerpc
 ```
 
-## Usage
+## <div id="usage">Usage</div>
 
 *btcorerpc.rpc.BitcoinRpc(rpc_user, rpc_password, host_ip="127.0.0.1", host_port=8332, raw_json_response=True)*
 
@@ -66,7 +66,7 @@ The above behavior can be disabled by setting **raw_json_response** to False whe
 and errors are raised via custom exceptions when making the method call (see **Exceptions** below for a list).
 
 
-## Exceptions
+## <div id="exceptions">Exceptions</div>
 
 Except for BitcoinRpcValueError, the rest of the exceptions are raised if **raw_json_response=False**
 and there was an error when making a method call (see **Usage** for an explanation on this).
@@ -83,7 +83,7 @@ and there was an error when making a method call (see **Usage** for an explanati
 | BitcoinRpcParseError          | Raised if there is a parse error in bitcoind                                 |
 | BitcoinRpcServerError         | Raised for any other undefined error in a RPC call                           |
 
-## Implemented RPC Methods
+## <div id="implemented-rpc-methods">Implemented RPC Methods</div>
 
 See the official [Bitcoin Core RPC Documentation](https://bitcoincore.org/en/doc/27.0.0/) 
 for more details on the RPC methods and the responses that each generates.
@@ -115,7 +115,7 @@ for more details on the RPC methods and the responses that each generates.
 | getdeploymentinfo     | get_deployment_info(blockhash: str = None)                              |
 | getdifficulty         | get_difficulty                                                          |
 
-## Logging
+## <div id="logging">Logging</div>
 
 Logging is implemented with both StreamHandler and RotatingFileHandler handlers. File logs are stored under
 $HOME/.btcore/rpc.log. A different home directory can be specified with the **BTCORE_HOME** environment variable.
