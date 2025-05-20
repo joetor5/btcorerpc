@@ -4,17 +4,13 @@ Simple Bitcoin Core RPC (JSON-RPC 1.0) client. Geared towards full node operator
 
 ## Table of Contents
 
-- [License](#license)
 - [Prerequisites](#prerequisites)
 - [Install](#install)
 - [Usage](#usage)
 - [Exceptions](#exceptions)
 - [Implemented RPC Methods](#implemented-rpc-methods)
 - [Logging](#logging)
-
-## <div id="license">License</div>
-
-Distributed under the MIT License. See the accompanying file LICENSE.
+- [License](#license)
 
 ## <div id="prerequisites">Prerequisites</div>
 
@@ -118,7 +114,7 @@ for more details on the RPC methods and the responses that each generates.
 ## <div id="logging">Logging</div>
 
 Logging is implemented with both StreamHandler and RotatingFileHandler handlers. File logs are stored under
-$HOME/.btcore/rpc.log. A different home directory can be specified with the **BTCORE_HOME** environment variable.
+`$HOME/.btcore/rpc.log`. A different home directory can be specified with the **BTCORE_HOME** environment variable.
 
 By default, the logs will not get printed or written to the log file. To turn these on, the following environment variables can be set.
 
@@ -134,3 +130,7 @@ Turn on StreamHandler logging:
 ```
 export BTCORERPC_LOG_CONSOLE=1
 ```
+
+## <div id="license">License</div>
+
+Distributed under the MIT License. See the accompanying file LICENSE.
