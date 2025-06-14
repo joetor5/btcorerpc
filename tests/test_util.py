@@ -34,7 +34,7 @@ def test_get_node_uptime():
         assert re.search("[\\d]+ minute[s]?", result)
     
     if "day" in result and "hour" in result and "minute" in result:
-        assert re.search("[\\d]+ day, [\\d]+ hour, [\\d]+ day", result)
+        assert re.search("[\\d]+ day[s]?, [\\d]+ hour[s]?, [\\d]+ day[s]?", result)
 
     if "hour" in result and "minute" in result:
         assert re.search("[\\d]+ hour[s]?, [\\d]+ minute[s]?", result)
