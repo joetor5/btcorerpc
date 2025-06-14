@@ -23,6 +23,22 @@ def test_get_node_traffic():
 
     _assert_util_result(result, keys, int, True)
 
+def test_get_node_uptime():
+    result = btc_util.get_node_uptime(rpc)
+    assert len(result) != 0
+    if "day" in result:
+        assert re.search("[\\d]+ day[s]?", result)
+    if "hour" in result:
+        assert re.search("[\\d]+ hour[s]?", result)
+    if "minute" in result:
+        assert re.search("[\\d]+ minute[s]?", result)
+    
+    if "day" in result and "hour" in result and "minute" in result:
+        assert re.search("[\\d]+ day, [\\d]+ hour, [\\d]+ day", result)
+
+    if "hour" in result and "minute" in result:
+        assert re.search("[\\d]+ hour[s]?, [\\d]+ minute[s]?", result)
+
 def _assert_util_result(result, keys, key_type, greater_than=False):
     for key in keys:
         assert key in result
