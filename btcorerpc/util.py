@@ -69,8 +69,9 @@ def get_node_uptime(rpc_obj):
 
     if int(hours) > 0:
         hours = (hours - 24 * days)
-        uptime_str += f"{str(int(hours))} hour"
-        uptime_str = append_s(uptime_str, hours) + ", "
+        if int(hours) != 0:
+            uptime_str += f"{str(int(hours))} hour"
+            uptime_str = append_s(uptime_str, hours) + ", "
 
         mins = int((hours - int(hours)) * 60)
         uptime_str += f"{str(mins)} minute"
