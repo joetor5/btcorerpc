@@ -30,7 +30,7 @@ _RPC_PARSE_ERROR = -32700
 class BitcoinRpc:
     
     def __init__(self, rpc_user: str, rpc_password: str, host_ip: str = "127.0.0.1", host_port: int = 8332,
-                 raw_json_response: bool = True):
+                 raw_json_response: bool = False):
 
         self.__rpc_user = rpc_user
         self.__rpc_password = rpc_password

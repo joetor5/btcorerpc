@@ -1,8 +1,8 @@
 # Copyright (c) 2025 Joel Torres
 # Distributed under the MIT License. See the accompanying file LICENSE.
 
-_version_major_minor_patch = (0, 1, 2)
-_version_dev = False
+_version_major_minor_patch = (0, 2, 0)
+_version_dev = True
 
 __version__ = ".".join(str(num) for num in _version_major_minor_patch)
 if _version_dev:
