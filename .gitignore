@@ -3,3 +3,6 @@
 *egg*
 dist
 .idea
+.env
+btcorerpc/__pycache__/
+tests/__pycache__/

@@ -50,11 +50,7 @@ def get_node_traffic(rpc_obj):
 @_run_util
 def get_node_uptime(rpc_obj):
 
-    def append_s(time_str, time_num):
-        if time_num > 1:
-            return time_str + "s"
-        else:
-            return time_str
+    append_s = lambda t, n: t + "s" if n > 1 else t
 
     uptime = rpc_obj.uptime()
     uptime_str = ""

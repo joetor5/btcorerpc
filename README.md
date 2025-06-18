@@ -37,7 +37,7 @@ pip install btcorerpc
 
 ## <div id="usage">Usage</div>
 
-*btcorerpc.rpc.BitcoinRpc(rpc_user, rpc_password, host_ip="127.0.0.1", host_port=8332, raw_json_response=True)*
+*btcorerpc.rpc.BitcoinRpc(rpc_user, rpc_password, host_ip="127.0.0.1", host_port=8332, raw_json_response=False)*
 
 Create RPC object and call any implemented Bitcoin Core RPC method. See **Implemented RPC Methods** below for a full list.
 
@@ -50,17 +50,11 @@ rpc_password = "test123"
 rpc = BitcoinRpc(rpc_user, rpc_password)
 
 blockchain_info = rpc.get_blockchain_info()
-if not blockchain_info["error"]:
-    print(blockchain_info["result"])
 ```
 
-By default, a dictionary object is returned in the same JSON-RPC format as returned by bitcoind when calling a method.
-The "error" key can be inspected for errors. 
+By default, the value from the "result" key from the JSON-RPC is returned and errors are raised via custom exceptions when making the method call (see **Exceptions** below for a list).
 
-The above behavior can be disabled by setting **raw_json_response** to False when creating the object 
-(or calling the **disable_raw_json_response** method). In this case, only the value from the "result" key is returned
-and errors are raised via custom exceptions when making the method call (see **Exceptions** below for a list).
-
+For getting the full JSON-RPC response as returned by bitcoind, we can set **raw_json_response=True** when creating the RPC object or by calling the **enable_raw_json_response** method. In this case, the "error" key can be inspected for errors. 
 
 ## <div id="exceptions">Exceptions</div>
 
