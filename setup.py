@@ -17,7 +17,7 @@ setup(
     license="MIT",
     platforms="any",
     install_requires=[
-        "requests==2.32.4"
+        "requests>=2.32.4"
     ],
     python_requires=">=3.8",
     classifiers=[
